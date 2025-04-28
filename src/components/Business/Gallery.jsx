@@ -109,9 +109,13 @@
 //     </div>
 //   );
 // }
-import React, { useState } from "react";
-import { Upload, Select, Button, message } from "antd";
-import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
+import React, { useState, useRef } from "react";
+import { Select, Button, message } from "antd";
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import {
   useUpdateBusinessMutation,
   useUploadBusinessPhotosMutation,
@@ -133,6 +137,7 @@ export default function Gallery({ data, businessId }) {
   const [updateBusiness, { isLoading }] = useUpdateBusinessMutation();
 
   const [galleries, setGalleries] = useState([{ type: "", images: [] }]);
+  const fileInputRefs = useRef([]);
 
   const updateGallery = (index, field, value) => {
     const updated = [...galleries];
@@ -140,8 +145,9 @@ export default function Gallery({ data, businessId }) {
     setGalleries(updated);
   };
 
-  const handleImageChange = (index, { fileList }) => {
-    updateGallery(index, "images", fileList);
+  const handleFileChange = (index, event) => {
+    const files = event.target.files ? Array.from(event.target.files) : [];
+    updateGallery(index, "images", files);
   };
 
   const handleAddGallery = () => {
@@ -152,16 +158,22 @@ export default function Gallery({ data, businessId }) {
     const updated = galleries.filter((_, i) => i !== index);
     setGalleries(updated);
   };
+
+  const openFilePicker = (index) => {
+    fileInputRefs.current[index]?.click();
+  };
+
   const handleSave = async () => {
     try {
       const formData = new FormData();
-
       let hasImages = false;
 
       for (const gallery of galleries) {
         for (const file of gallery.images) {
-          if (file.originFileObj instanceof File) {
-            formData.append("images", file.originFileObj); // Make sure you're appending the actual file object
+          console.log(file); // Check if it's a File
+          console.log(file instanceof File, file);
+          if (file instanceof File) {
+            formData.append("images", file);
             hasImages = true;
           }
         }
@@ -175,7 +187,8 @@ export default function Gallery({ data, businessId }) {
         return;
       }
 
-      console.log("FormData being sent:", formData); // Log formData to verify
+      console.log("FormData being sent:", formData);
+
       const response = await uploadFile({ businessId, formData }).unwrap();
 
       message.success({
@@ -213,18 +226,34 @@ export default function Gallery({ data, businessId }) {
             />
           </div>
 
-          <Upload
-            listType="picture-card"
-            fileList={gallery.images}
-            onChange={(info) => handleImageChange(index, info)}
-            beforeUpload={() => false} // prevent automatic upload
-            multiple
-          >
-            <div>
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>Upload</div>
-            </div>
-          </Upload>
+          <div className="flex flex-wrap gap-4">
+            {gallery.images.map((file, i) => (
+              <img
+                key={i}
+                src={URL.createObjectURL(file)}
+                alt="preview"
+                width={100}
+                height={100}
+                style={{ objectFit: "cover", borderRadius: "8px" }}
+              />
+            ))}
+          </div>
+
+          <div>
+            <input
+              type="file"
+              multiple
+              style={{ display: "none" }}
+              ref={(el) => (fileInputRefs.current[index] = el)}
+              onChange={(e) => handleFileChange(index, e)}
+            />
+            <Button
+              icon={<UploadOutlined />}
+              onClick={() => openFilePicker(index)}
+            >
+              Upload Images
+            </Button>
+          </div>
         </div>
       ))}
 

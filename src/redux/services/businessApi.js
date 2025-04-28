@@ -90,7 +90,6 @@ export const businessApi = createApi({
         url: `businesses/upload-photos/${businessId}`,
         method: "POST",
         body: formData,
-        formData: true,
       }),
       invalidatesTags: ["Business"],
     }),

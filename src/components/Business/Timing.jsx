@@ -51,7 +51,6 @@ const BusinessTiming = ({ data, businessId, onCancel }) => {
       setIs24x7(incomingIs24x7 || false);
     }
   }, [data]);
-  console.log(timings);
 
   const handleTimeChange = (day, type, time) => {
     setTimings((prev) => ({
