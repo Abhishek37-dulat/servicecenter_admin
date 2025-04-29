@@ -93,6 +93,14 @@ export const businessApi = createApi({
       }),
       invalidatesTags: ["Business"],
     }),
+    //10. Delete photo mutation
+    deleteBusinessPhoto: builder.mutation({
+      query: ({ businessId, photoId }) => ({
+        url: `businesses/delete-photo/${businessId}/${photoId}`, // ✅ Corrected path
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Business"],
+    }),
   }),
 });
 
@@ -106,4 +114,5 @@ export const {
   useAddReviewMutation,
   useGetBusinessReviewsQuery,
   useUploadBusinessPhotosMutation,
+  useDeleteBusinessPhotoMutation,
 } = businessApi;

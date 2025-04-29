@@ -299,7 +299,7 @@ import {
 import { useGetAllServices1Query } from "../../redux/services/serviceApi";
 import { useGetAllAmenities1Query } from "../../redux/services/amenityApi";
 
-export default function BusinessInfo({ data, businessId, closeModal }) {
+export default function BusinessInfo({ data, businessId }) {
   const [formData, setFormData] = useState({
     businessName: "",
     description: "",
@@ -354,7 +354,6 @@ export default function BusinessInfo({ data, businessId, closeModal }) {
         }).unwrap();
         if (res) {
           message.success("Business updated successfully!");
-          closeModal();
         } else {
           message.error(res?.message || "Failed to update business.");
         }
@@ -363,7 +362,6 @@ export default function BusinessInfo({ data, businessId, closeModal }) {
         const res = await createBusiness(payload).unwrap();
         if (res) {
           message.success("Business created successfully!");
-          closeModal();
         } else {
           message.error(res?.message || "Failed to create business.");
         }

@@ -4,8 +4,8 @@ import { setLoading } from "../slices/loadingSlice";
 
 const axiosInstance = axios.create({
   // baseURL: `http://localhost:5000/api/`,
-  baseURL: `http://97.74.87.147:5000/api/v1`,
-  // baseURL: `http://localhost:5000/api/v1`,
+  // baseURL: `http://97.74.87.147:5000/api/v1`,
+  baseURL: `http://localhost:5000/api/v1`,
 
   headers: {
     accept: `application/json`,
@@ -24,7 +24,10 @@ const setUpInterceptors = (getState, dispatch) => {
       if (config.method === "post" || config.method === "delete") {
         dispatch(setLoading(true));
       }
-
+      // Handle FormData (don't set Content-Type manually)
+      if (config.data instanceof FormData) {
+        delete config.headers["Content-Type"]; // Let Axios handle it
+      }
       return config;
     },
     (error) => {
