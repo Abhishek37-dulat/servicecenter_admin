@@ -344,7 +344,7 @@ export default function BusinessInfo({ data, businessId }) {
       overview,
       businessId, // use the passed prop
     };
-
+    console.log(payload);
     try {
       if (businessId) {
         // Update existing business
@@ -421,7 +421,7 @@ export default function BusinessInfo({ data, businessId }) {
           }
           options={[
             "Restaurant",
-            "Salon",
+            "Spa & Salon",
             "Gym",
             "Pet Store",
             "Bookstore",

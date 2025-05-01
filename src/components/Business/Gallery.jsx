@@ -119,6 +119,7 @@ import {
 } from "../../redux/services/businessApi";
 
 const galleryTypes = [
+  "BusinessImage",
   "Interior/Infrastructure",
   "Food Items",
   "Team",

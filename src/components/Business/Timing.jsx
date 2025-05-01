@@ -5,7 +5,6 @@ import { useUpdateBusinessMutation } from "../../redux/services/businessApi";
 
 const BusinessTiming = ({ data, businessId, onCancel }) => {
   const [updateBusiness, { isLoading }] = useUpdateBusinessMutation();
-
   // Initializing states with default values
   const [timings, setTimings] = useState({
     monday: { open: null, close: null },
@@ -41,9 +40,6 @@ const BusinessTiming = ({ data, businessId, onCancel }) => {
         is24x7: incomingIs24x7,
       } = data?.data?.operatingHours;
 
-      // Log the incoming timings data to check if it's coming in correctly
-      console.log("Incoming Timings:", incomingTimings);
-
       // Set state
       setTimings(incomingTimings || {});
       setLunchBreaks(incomingLunchBreaks || {});
@@ -51,6 +47,7 @@ const BusinessTiming = ({ data, businessId, onCancel }) => {
       setIs24x7(incomingIs24x7 || false);
     }
   }, [data]);
+  console.log("Incoming Timings:", timings);
 
   const handleTimeChange = (day, type, time) => {
     setTimings((prev) => ({
@@ -120,7 +117,7 @@ const BusinessTiming = ({ data, businessId, onCancel }) => {
       );
     }
   };
-
+  console.log(timings["wednesday"]);
   const handleCancel = () => {
     if (onCancel) onCancel();
   };
@@ -140,10 +137,10 @@ const BusinessTiming = ({ data, businessId, onCancel }) => {
         <label>Open 24/7</label>
       </div>
 
-      {!is24x7 && (
+      {/* {!is24x7 && (
         <>
           {/* Weekdays Timings */}
-          {[
+      {/* {[
             "monday",
             "tuesday",
             "wednesday",
@@ -152,6 +149,8 @@ const BusinessTiming = ({ data, businessId, onCancel }) => {
             "saturday",
             "sunday",
           ].map((day) => (
+            console.log(day, "open time:", timings[day]?.open); // 👈 Console log here
+
             <div className="flex justify-between items-center mb-4" key={day}>
               <label className="w-1/4">
                 {day.charAt(0).toUpperCase() + day.slice(1)}
@@ -174,6 +173,47 @@ const BusinessTiming = ({ data, businessId, onCancel }) => {
               </div>
             </div>
           ))}
+        </>
+      )} */}
+      {!is24x7 && (
+        <>
+          {[
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday",
+          ].map((day) => {
+            console.log(day, "open time:", timings[day]?.open); // 👈 Console log here
+
+            return (
+              <div className="flex justify-between items-center mb-4" key={day}>
+                <label className="w-1/4">
+                  {day.charAt(0).toUpperCase() + day.slice(1)}
+                </label>
+                <div className="flex items-center w-3/4">
+                  <TimePicker
+                    value={
+                      timings[day]?.open ? dayjs(timings[day]?.open) : null
+                    }
+                    onChange={(time) => handleTimeChange(day, "open", time)}
+                    format="HH:mm"
+                    className="mr-4"
+                  />
+                  <span className="mx-2">-</span>
+                  <TimePicker
+                    value={
+                      timings[day]?.close ? dayjs(timings[day]?.close) : null
+                    }
+                    onChange={(time) => handleTimeChange(day, "close", time)}
+                    format="HH:mm"
+                  />
+                </div>
+              </div>
+            );
+          })}
         </>
       )}
 
