@@ -420,14 +420,14 @@ export default function BusinessInfo({ data, businessId }) {
             setFormData({ ...formData, businessType: value })
           }
           options={[
-            "Restaurant",
-            "Spa & Salon",
-            "Gym",
-            "Pet Store",
-            "Bookstore",
-            "Cafe",
-            "Medical Clinic",
-            "Grocery Store",
+            "restaurant",
+            "beauty-spa",
+            "gym",
+            "pet-store",
+            "book-store",
+            "cafe",
+            "medical-clinic",
+            "grocery-store",
           ].map((type) => ({ label: type, value: type }))}
         />
       </div>
