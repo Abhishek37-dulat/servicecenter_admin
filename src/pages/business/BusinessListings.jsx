@@ -1,12 +1,17 @@
-
 import { useState } from "react";
 import { Button, Modal, Input, Table, Tag } from "antd";
-import {    Space, Popconfirm, message } from "antd";
-import { useGetAllBusinessesQuery, useDeleteBusinessMutation } from "../../redux/services/businessApi";
+import { Space, Popconfirm, message } from "antd";
+import {
+  useGetAllBusinessesQuery,
+  useDeleteBusinessMutation,
+} from "../../redux/services/businessApi";
+
 import { useNavigate } from "react-router-dom";
 import BusinessForm from "./BusinessForm";
 import { set } from "react-hook-form";
- 
+import { FaEye } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import BusinessInfo from "../../components/Business/BusinessInfo";
 const BusinessList = () => {
   const navigate = useNavigate();
 
@@ -16,7 +21,10 @@ const BusinessList = () => {
   const [searchText, setSearchText] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Fetch Businesses from API
-  const { data, isLoading, isError } = useGetAllBusinessesQuery({ page, pageSize });
+  const { data, isLoading, isError } = useGetAllBusinessesQuery({
+    page,
+    pageSize,
+  });
 
   // Delete Mutation
   const [deleteBusiness] = useDeleteBusinessMutation();
@@ -30,52 +38,83 @@ const BusinessList = () => {
       message.error("Failed to delete business!");
     }
   };
-
+  console.log(data);
   // Filter Businesses based on Search Query
-  const filteredBusinesses = data?.data?.businesses?.filter((business) =>
-    business.name.toLowerCase().includes(searchText.toLowerCase()) ||
-    business.email.toLowerCase().includes(searchText.toLowerCase()) ||
-    business.phone.includes(searchText)
-  ) || [];
+  const filteredBusinesses =
+    data?.data?.data?.filter(
+      (business) =>
+        business.businessName
+          .toLowerCase()
+          .includes(searchText.toLowerCase()) ||
+        business.email.toLowerCase().includes(searchText.toLowerCase()) ||
+        business.phone.includes(searchText)
+    ) || [];
 
   // Define Columns
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      sorter: (a, b) => a.name.localeCompare(b.name),
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      sorter: (a, b) => a.email.localeCompare(b.email),
+      title: "Business Name",
+      dataIndex: "businessName",
+      key: "businessName",
     },
     {
       title: "Phone",
       dataIndex: "phone",
       key: "phone",
-      sorter: (a, b) => a.phone.localeCompare(b.phone),
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "City",
+      dataIndex: "city",
+      key: "city",
+    },
+    {
+      title: "Services",
+      dataIndex: "services",
+      key: "services",
+      render: (services) => (
+        <Space wrap>
+          {services?.map((serviceId) => (
+            <Tag color="blue" key={serviceId}>
+              {serviceId}
+            </Tag>
+          ))}
+        </Space>
+      ),
+    },
+    {
+      title: "Amenities",
+      dataIndex: "amenities",
+      key: "amenities",
+      render: (amenities) => (
+        <Space wrap>
+          {amenities?.map((item) => (
+            <Tag color="green" key={item.id}>
+              {item.name}
+            </Tag>
+          ))}
+        </Space>
+      ),
     },
     {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
         <Space>
-          <Button type="primary" onClick={() => navigate(`/admin/business/${record.id}`)}>Edit</Button>
+          <Button
+            icon={<FaEye />}
+            type="default"
+            onClick={() => navigate(`/admin/businessinfo/${record.id}`)}
+          />
           <Popconfirm
-            title="Are you sure to delete this business?"
+            title="Are you sure?"
             onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
           >
-            <Button type="danger">Delete</Button>
+            <Button danger icon={<MdDelete />} />
           </Popconfirm>
         </Space>
       ),
@@ -114,14 +153,19 @@ const BusinessList = () => {
         }}
       />
 
-<Modal
+      <Modal
         title="Add Business"
         open={isModalOpen}
-        footer={null}
         onCancel={() => setIsModalOpen(false)}
-        width={1000}
+        footer={null}
+        width={700} // wider modal
+        style={{ padding: "24px", maxHeight: "80vh", overflowY: "auto" }}
       >
-        <BusinessForm onClose={() => setIsModalOpen(false)} />
+        <div className="flex justify-center">
+          <div className="w-full max-w-2xl">
+            <BusinessInfo closeModal={() => setIsModalOpen(false)} />
+          </div>
+        </div>
       </Modal>
     </div>
   );

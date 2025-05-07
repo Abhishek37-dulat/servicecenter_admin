@@ -1,4 +1,8 @@
- @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap");
 .icon-xxs {
   height: 1rem;
   line-height: 1rem;
@@ -11,7 +15,7 @@
   z-index: 1;
   left: 0;
   text-align: center;
-  display: none ;
+  display: none;
 }
 
 .icon-circle {
@@ -32,7 +36,7 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
 }
 
-@media (max-width: 992px) {  
+@media (max-width: 992px) {
   .sticky-button {
     display: block;
   }
@@ -24748,8 +24752,6 @@ a.fc-event:hover {
   opacity: 0.75;
 }
 
-
-
 .marquee {
   display: flex;
   overflow: hidden;
@@ -24803,7 +24805,7 @@ a.fc-event:hover {
 }
 
 .testimonial-card {
-  background: #2A2A3C;
+  background: #2a2a3c;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;

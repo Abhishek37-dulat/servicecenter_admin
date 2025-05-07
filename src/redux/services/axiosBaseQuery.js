@@ -2,13 +2,11 @@ import axios from "axios";
 import { setStudent } from "../slices/studentSlice";
 import { setLoading } from "../slices/loadingSlice";
 
-
 const axiosInstance = axios.create({
   // baseURL: `http://localhost:5000/api/`,
-  // baseURL: `https://lmslegacy.onrender.com/api/`,
+  // baseURL: `http://97.74.87.147:5000/api/v1`,
   baseURL: `http://localhost:5000/api/v1`,
 
-  
   headers: {
     accept: `application/json`,
     "Content-Type": "application/json",
@@ -23,21 +21,24 @@ const setUpInterceptors = (getState, dispatch) => {
         config.headers["Authorization"] = `Bearer ${token}`;
       }
 
-      if (config.method === "post"||config.method === "delete") {
+      if (config.method === "post" || config.method === "delete") {
         dispatch(setLoading(true));
       }
-
+      // Handle FormData (don't set Content-Type manually)
+      if (config.data instanceof FormData) {
+        delete config.headers["Content-Type"]; // Let Axios handle it
+      }
       return config;
     },
     (error) => {
-      dispatch(setLoading(false));  
+      dispatch(setLoading(false));
       return Promise.reject(error);
     }
   );
 
   axiosInstance.interceptors.response.use(
     (res) => {
-      if (res.config.method === "post"||res.config.method === "delete") {
+      if (res.config.method === "post" || res.config.method === "delete") {
         dispatch(setLoading(false));
       }
       return res;
@@ -45,7 +46,7 @@ const setUpInterceptors = (getState, dispatch) => {
     async (err) => {
       const originalConfig = err.config;
 
-      if (err.config.method === "post"||err.config.method === "delete") {
+      if (err.config.method === "post" || err.config.method === "delete") {
         dispatch(setLoading(false));
       }
 
@@ -120,4 +121,4 @@ const axiosBaseQuery =
 
 export default axiosBaseQuery();
 
-  // baseURL: `https://lmslegacy.onrender.com/api/`,
+// baseURL: `https://lmslegacy.onrender.com/api/`,
