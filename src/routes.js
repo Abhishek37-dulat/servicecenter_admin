@@ -42,6 +42,11 @@ export const adminRoutes = [
     element: lazy(() => import("./pages/amenities/Amenity.jsx")),
   },
   {
+    path: "/admin/categories",
+    exact: true,
+    element: lazy(() => import("./pages/categories/Category.jsx")),
+  },
+  {
     path: "/admin/blogs",
     exact: true,
     element: lazy(() => import("./pages/business/BlogPage.jsx")),

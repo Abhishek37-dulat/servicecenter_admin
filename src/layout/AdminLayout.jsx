@@ -142,6 +142,26 @@ export default function AdminLayout() {
                     Business Amenities
                   </a>
                 </li>
+
+                    <li className="nav-item">
+                  <a
+                    className={`nav-link ${
+                      isActive("/admin/amenities")
+                        ? "bg-white text-[#0f336d] font-semibold rounded"
+                        : ""
+                    }`}
+                    href="/admin/categories"
+                  >
+                    <FaBriefcase
+                      className={`nav-icon me-2 ${
+                        isActive("/admin/categories")
+                          ? "text-yellow-300"
+                          : "text-white"
+                      }`}
+                    />
+                    Business Categories
+                  </a>
+                </li>
                 {/* Reviews & Ratings */}
                 <li className="nav-item">
                   <a

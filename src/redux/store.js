@@ -11,6 +11,7 @@ import { adminApi } from "./services/adminApi";
 import { businessApi } from "./services/businessApi";
 import { serviceApi } from "./services/serviceApi";
 import { amenityApi } from "./services/amenityApi";
+import { categoryApi } from "./services/categoryApi";
  
 const setUpStore = () => {
   const store = configureStore({
@@ -20,6 +21,7 @@ const setUpStore = () => {
       [businessApi.reducerPath]: businessApi.reducer,
       [serviceApi.reducerPath]: serviceApi.reducer,
       [amenityApi.reducerPath]: amenityApi.reducer,
+      [categoryApi.reducerPath]: categoryApi.reducer,
       
       
       auth: authReducer,
@@ -33,6 +35,7 @@ const setUpStore = () => {
         businessApi.middleware,
         serviceApi.middleware,
         amenityApi.middleware,
+        categoryApi.middleware,
       
       ),
   });
