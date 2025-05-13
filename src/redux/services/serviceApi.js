@@ -20,19 +20,19 @@ export const serviceApi = createApi({
 
     // **2. Get All Services**
     getAllServices: builder.query({
-        query: ({ search = "", page = 1, limit = 10 }) => ({
-          url: `services?search=${search}&page=${page}&limit=${limit}`,
-          method: "GET",
-        }),
-        providesTags: ["Service"],
+      query: ({ search = "", page = 1, limit = 10 }) => ({
+        url: `services?search=${search}&page=${page}&limit=${limit}`,
+        method: "GET",
       }),
-      getAllServices1: builder.query({
-        query: ( ) => ({
-          url: `services?page=1&limit=50`,
-          method: "GET",
-        }),
-        providesTags: ["Service"],
+      providesTags: ["Service"],
+    }),
+    getAllServices1: builder.query({
+      query: () => ({
+        url: `services?page=1&limit=50`,
+        method: "GET",
       }),
+      providesTags: ["Service"],
+    }),
     // **3. Get Service By ID**
     getServiceById: builder.query({
       query: (id) => ({
@@ -70,5 +70,5 @@ export const {
   useGetServiceByIdQuery,
   useUpdateServiceMutation,
   useDeleteServiceMutation,
-  useGetAllServices1Query
+  useGetAllServices1Query,
 } = serviceApi;

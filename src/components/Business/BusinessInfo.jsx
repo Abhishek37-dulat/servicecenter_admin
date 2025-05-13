@@ -298,8 +298,14 @@ import {
 } from "../../redux/services/businessApi";
 import { useGetAllServices1Query } from "../../redux/services/serviceApi";
 import { useGetAllAmenities1Query } from "../../redux/services/amenityApi";
+import { useGetAllCategoriesQuery } from "../../redux/services/categoryApi";
 
-export default function BusinessInfo({ data, businessId }) {
+export default function BusinessInfo({
+  data,
+  businessId,
+  closeModal,
+  isModal = false,
+}) {
   const [formData, setFormData] = useState({
     businessName: "",
     description: "",
@@ -314,14 +320,23 @@ export default function BusinessInfo({ data, businessId }) {
 
   const { data: servicesData } = useGetAllServices1Query();
   const { data: amenitiesData } = useGetAllAmenities1Query();
+  const { data: categoryData } = useGetAllCategoriesQuery();
 
   const [createBusiness, { isLoading: isCreating }] =
     useCreateBusinessMutation();
   const [updateBusiness, { isLoading: isUpdating }] =
     useUpdateBusinessMutation();
 
+  console.log(data);
   useEffect(() => {
-    if (businessId && data?.success && data?.data) {
+    if (
+      businessId &&
+      data?.success &&
+      data?.data &&
+      servicesData?.data &&
+      amenitiesData?.data &&
+      categoryData?.data
+    ) {
       setFormData({
         businessName: data.data.businessName || "",
         description: data.data.description || "",
@@ -330,12 +345,19 @@ export default function BusinessInfo({ data, businessId }) {
         employeeCount: data.data.employeeCount || "",
         businessType: data.data.businessType || "",
       });
-      setOverview(data.data.overview || "");
-      setSelectedServices(data.data.services || []);
-      setSelectedAmenities(data.data.amenities || []);
-    }
-  }, [businessId, data]);
 
+      // Ensure these are arrays of IDs
+      setSelectedServices(data.data.services?.map((s) => s.id) || []);
+      setSelectedAmenities(data.data.amenities?.map((a) => a.id) || []);
+      setOverview(data.data.overview || "");
+    }
+  }, [
+    businessId,
+    data,
+    servicesData?.data,
+    amenitiesData?.data,
+    categoryData?.data,
+  ]);
   const handleSave = async () => {
     const payload = {
       ...formData,
@@ -344,11 +366,14 @@ export default function BusinessInfo({ data, businessId }) {
       overview,
       businessId, // use the passed prop
     };
+
     console.log(payload);
+
     try {
+      let res;
       if (businessId) {
         // Update existing business
-        const res = await updateBusiness({
+        res = await updateBusiness({
           id: businessId,
           updatedData: payload,
         }).unwrap();
@@ -359,12 +384,17 @@ export default function BusinessInfo({ data, businessId }) {
         }
       } else {
         // Create new business
-        const res = await createBusiness(payload).unwrap();
+        res = await createBusiness(payload).unwrap();
         if (res) {
           message.success("Business created successfully!");
         } else {
           message.error(res?.message || "Failed to create business.");
         }
+      }
+
+      // ✅ Close modal only if inside modal
+      if (isModal && typeof closeModal === "function") {
+        closeModal();
       }
     } catch (err) {
       console.error("Error saving business:", err);
@@ -386,6 +416,11 @@ export default function BusinessInfo({ data, businessId }) {
     setOverview("");
     setSelectedServices([]);
     setSelectedAmenities([]);
+
+    // ✅ Close modal only if inside modal
+    if (isModal && typeof closeModal === "function") {
+      closeModal();
+    }
   };
 
   return (
@@ -419,16 +454,13 @@ export default function BusinessInfo({ data, businessId }) {
           onChange={(value) =>
             setFormData({ ...formData, businessType: value })
           }
-          options={[
-            "restaurant",
-            "beauty-spa",
-            "gym",
-            "pet-store",
-            "book-store",
-            "cafe",
-            "medical-clinic",
-            "grocery-store",
-          ].map((type) => ({ label: type, value: type }))}
+          filterOption={(input, option) =>
+            option.label.toLowerCase().includes(input.toLowerCase())
+          }
+          options={categoryData?.data.map((category) => ({
+            label: category.name,
+            value: category.id,
+          }))}
         />
       </div>
 
@@ -465,6 +497,7 @@ export default function BusinessInfo({ data, businessId }) {
           <Select
             mode="multiple"
             allowClear
+            showSearch
             style={{ width: "100%" }}
             placeholder="Select services"
             value={selectedServices}
@@ -474,6 +507,9 @@ export default function BusinessInfo({ data, businessId }) {
               value: service.id,
             }))}
             optionFilterProp="label"
+            filterOption={(input, option) =>
+              option.label.toLowerCase().includes(input.toLowerCase())
+            }
           />
         </div>
       )}
@@ -487,6 +523,7 @@ export default function BusinessInfo({ data, businessId }) {
           <Select
             mode="multiple"
             allowClear
+            showSearch
             style={{ width: "100%" }}
             placeholder="Select amenities"
             value={selectedAmenities}
@@ -496,6 +533,9 @@ export default function BusinessInfo({ data, businessId }) {
               value: amenity.id,
             }))}
             optionFilterProp="label"
+            filterOption={(input, option) =>
+              option.label.toLowerCase().includes(input.toLowerCase())
+            }
           />
         </div>
       )}

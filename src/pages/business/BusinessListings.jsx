@@ -78,9 +78,9 @@ const BusinessList = () => {
       key: "services",
       render: (services) => (
         <Space wrap>
-          {services?.map((serviceId) => (
-            <Tag color="blue" key={serviceId}>
-              {serviceId}
+          {services?.map((service) => (
+            <Tag color="blue" key={service.id}>
+              {service.name}
             </Tag>
           ))}
         </Space>
@@ -152,18 +152,20 @@ const BusinessList = () => {
           },
         }}
       />
-
       <Modal
         title="Add Business"
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         footer={null}
-        width={700} // wider modal
+        width={700}
         style={{ padding: "24px", maxHeight: "80vh", overflowY: "auto" }}
       >
         <div className="flex justify-center">
           <div className="w-full max-w-2xl">
-            <BusinessInfo closeModal={() => setIsModalOpen(false)} />
+            <BusinessInfo
+              closeModal={() => setIsModalOpen(false)}
+              isModal={true}
+            />
           </div>
         </div>
       </Modal>

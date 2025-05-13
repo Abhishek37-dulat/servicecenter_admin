@@ -142,8 +142,8 @@
 import { useForm, Controller } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useCreateBusinessMutation } from "../../redux/services/businessApi";
-import { useGetAllServices1Query } from "../../redux/services/serviceApi";
-import { useGetAllAmenities1Query } from "../../redux/services/amenityApi";
+import { useGetAllServicesQuery } from "../../redux/services/serviceApi";
+import { useGetAllAmenitiesQuery } from "../../redux/services/amenityApi";
 import { Input, Select, Button } from "antd";
 
 const { TextArea } = Input;
@@ -158,8 +158,8 @@ export default function BusinessForm({ onClose }) {
 
   const [createBusiness, { isLoading, isSuccess }] =
     useCreateBusinessMutation();
-  const { data: servicesData } = useGetAllServices1Query();
-  const { data: amenitiesData } = useGetAllAmenities1Query();
+  const { data: servicesData } = useGetAllServicesQuery();
+  const { data: amenitiesData } = useGetAllAmenitiesQuery();
 
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedAmenities, setSelectedAmenities] = useState([]);

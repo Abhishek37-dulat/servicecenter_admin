@@ -1,20 +1,24 @@
 import { useState } from "react";
 import { Table, Button, Modal, Form, Input, Pagination, Spin } from "antd";
-import { 
-  useGetAllAmenitiesQuery, 
-  useCreateAmenityMutation, 
-  useUpdateAmenityMutation, 
-  useDeleteAmenityMutation 
+import {
+  useGetAllAmenitiesQuery,
+  useCreateAmenityMutation,
+  useUpdateAmenityMutation,
+  useDeleteAmenityMutation,
 } from "../../redux/services/amenityApi";
 import Swal from "sweetalert2";
 
 export default function AmenityList() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5;
+  const pageSize = 10;
 
   // ✅ Fetch amenities with search & pagination params
-  const { data, isLoading } = useGetAllAmenitiesQuery({ search, page: currentPage, limit: pageSize });
+  const { data, isLoading } = useGetAllAmenitiesQuery({
+    search,
+    page: currentPage,
+    limit: pageSize,
+  });
 
   const [createAmenity] = useCreateAmenityMutation();
   const [updateAmenity] = useUpdateAmenityMutation();
@@ -75,17 +79,21 @@ export default function AmenityList() {
 
       {/* ✅ Search & Add Amenity Button */}
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <Input 
-          placeholder="Search amenity..." 
+        <Input
+          placeholder="Search amenity..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-50"
         />
-        <Button type="primary" onClick={openAddModal}>Add Amenity</Button>
+        <Button type="primary" onClick={openAddModal}>
+          Add Amenity
+        </Button>
       </div>
 
       {/* ✅ Show loading spinner */}
-      {isLoading ? <Spin size="large" /> : (
+      {isLoading ? (
+        <Spin size="large" />
+      ) : (
         <>
           {/* ✅ Table */}
           <Table
@@ -94,21 +102,33 @@ export default function AmenityList() {
             pagination={false}
             columns={[
               { title: "Amenity Name", dataIndex: "name", key: "name" },
-              { title: "Actions", key: "actions", render: (text, record) => (
-                <>
-                  <Button type="link" onClick={() => handleEdit(record)}>Edit</Button>
-                  <Button type="link" danger onClick={() => handleDelete(record.id)}>Delete</Button>
-                </>
-              ) }
+              {
+                title: "Actions",
+                key: "actions",
+                render: (text, record) => (
+                  <>
+                    <Button type="link" onClick={() => handleEdit(record)}>
+                      Edit
+                    </Button>
+                    <Button
+                      type="link"
+                      danger
+                      onClick={() => handleDelete(record.id)}
+                    >
+                      Delete
+                    </Button>
+                  </>
+                ),
+              },
             ]}
           />
 
           {/* ✅ Pagination */}
-          <Pagination 
-            current={currentPage} 
-            pageSize={pageSize} 
-            total={data?.total || 0} 
-            onChange={setCurrentPage} 
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={data?.total || 0}
+            onChange={setCurrentPage}
             className="mt-3 text-center"
           />
         </>
@@ -122,7 +142,11 @@ export default function AmenityList() {
         onOk={() => form.submit()}
       >
         <Form form={form} layout="vertical" onFinish={handleAddAmenity}>
-          <Form.Item name="name" label="Amenity Name" rules={[{ required: true, message: "Amenity name is required" }]}>
+          <Form.Item
+            name="name"
+            label="Amenity Name"
+            rules={[{ required: true, message: "Amenity name is required" }]}
+          >
             <Input />
           </Form.Item>
         </Form>
@@ -136,7 +160,11 @@ export default function AmenityList() {
         onOk={() => form.submit()}
       >
         <Form form={form} layout="vertical" onFinish={handleUpdate}>
-          <Form.Item name="name" label="Amenity Name" rules={[{ required: true, message: "Amenity name is required" }]}>
+          <Form.Item
+            name="name"
+            label="Amenity Name"
+            rules={[{ required: true, message: "Amenity name is required" }]}
+          >
             <Input />
           </Form.Item>
         </Form>

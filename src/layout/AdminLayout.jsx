@@ -82,7 +82,7 @@ export default function AdminLayout() {
                   </a>
                 </li>
                 {/* Business Info */}
-           
+
                 <li className="nav-item">
                   <a
                     className={`nav-link ${
@@ -100,6 +100,27 @@ export default function AdminLayout() {
                       }`}
                     />
                     Business Listings
+                  </a>
+                </li>
+                {/* Business Categories */}
+
+                <li className="nav-item">
+                  <a
+                    className={`nav-link ${
+                      isActive("/admin/categories")
+                        ? "bg-white text-[#0f336d] font-semibold rounded"
+                        : ""
+                    }`}
+                    href="/admin/categories"
+                  >
+                    <FaLayerGroup
+                      className={`nav-icon me-2 ${
+                        isActive("/admin/categories")
+                          ? "text-yellow-300"
+                          : "text-white"
+                      }`}
+                    />
+                    Business Categories
                   </a>
                 </li>
                 {/* Business Services */}
@@ -143,25 +164,6 @@ export default function AdminLayout() {
                   </a>
                 </li>
 
-                    <li className="nav-item">
-                  <a
-                    className={`nav-link ${
-                      isActive("/admin/amenities")
-                        ? "bg-white text-[#0f336d] font-semibold rounded"
-                        : ""
-                    }`}
-                    href="/admin/categories"
-                  >
-                    <FaBriefcase
-                      className={`nav-icon me-2 ${
-                        isActive("/admin/categories")
-                          ? "text-yellow-300"
-                          : "text-white"
-                      }`}
-                    />
-                    Business Categories
-                  </a>
-                </li>
                 {/* Reviews & Ratings */}
                 <li className="nav-item">
                   <a
@@ -184,7 +186,7 @@ export default function AdminLayout() {
                 </li>
 
                 {/* Categories & Tags */}
-                <li className="nav-item">
+                {/*  <li className="nav-item">
                   <a
                     className={`nav-link ${
                       isActive("/admin/categories")
@@ -202,7 +204,7 @@ export default function AdminLayout() {
                     />
                     Categories & Tags
                   </a>
-                </li>
+                </li> */}
                 {/* Reported Content */}
                 <li className="nav-item">
                   <a

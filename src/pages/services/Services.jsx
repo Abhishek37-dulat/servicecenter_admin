@@ -1,20 +1,24 @@
 import { useState } from "react";
 import { Table, Button, Modal, Form, Input, Pagination, Spin } from "antd";
-import { 
-  useGetAllServicesQuery, 
-  useCreateServiceMutation, 
-  useUpdateServiceMutation, 
-  useDeleteServiceMutation 
+import {
+  useGetAllServicesQuery,
+  useCreateServiceMutation,
+  useUpdateServiceMutation,
+  useDeleteServiceMutation,
 } from "../../redux/services/serviceApi";
 import Swal from "sweetalert2";
 
 export default function ServiceList() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5;
+  const pageSize = 10;
 
   // ✅ Fetch services with search & pagination params
-  const { data, isLoading } = useGetAllServicesQuery({ search, page: currentPage, limit: pageSize });
+  const { data, isLoading } = useGetAllServicesQuery({
+    search,
+    page: currentPage,
+    limit: pageSize,
+  });
 
   const [createService] = useCreateServiceMutation();
   const [updateService] = useUpdateServiceMutation();
@@ -75,17 +79,21 @@ export default function ServiceList() {
 
       {/* ✅ Search & Add Service Button */}
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <Input 
-          placeholder="Search service..." 
+        <Input
+          placeholder="Search service..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-50"
         />
-        <Button type="primary" onClick={openAddModal}>Add Service</Button>
+        <Button type="primary" onClick={openAddModal}>
+          Add Service
+        </Button>
       </div>
 
       {/* ✅ Show loading spinner */}
-      {isLoading ? <Spin size="large" /> : (
+      {isLoading ? (
+        <Spin size="large" />
+      ) : (
         <>
           {/* ✅ Table */}
           <Table
@@ -94,21 +102,33 @@ export default function ServiceList() {
             pagination={false}
             columns={[
               { title: "Service Name", dataIndex: "name", key: "name" },
-              { title: "Actions", key: "actions", render: (text, record) => (
-                <>
-                  <Button type="link" onClick={() => handleEdit(record)}>Edit</Button>
-                  <Button type="link" danger onClick={() => handleDelete(record.id)}>Delete</Button>
-                </>
-              ) }
+              {
+                title: "Actions",
+                key: "actions",
+                render: (text, record) => (
+                  <>
+                    <Button type="link" onClick={() => handleEdit(record)}>
+                      Edit
+                    </Button>
+                    <Button
+                      type="link"
+                      danger
+                      onClick={() => handleDelete(record.id)}
+                    >
+                      Delete
+                    </Button>
+                  </>
+                ),
+              },
             ]}
           />
 
           {/* ✅ Pagination */}
-          <Pagination 
-            current={currentPage} 
-            pageSize={pageSize} 
-            total={data?.total || 0} 
-            onChange={setCurrentPage} 
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={data?.total || 0}
+            onChange={setCurrentPage}
             className="mt-3 text-center"
           />
         </>
@@ -122,7 +142,11 @@ export default function ServiceList() {
         onOk={() => form.submit()}
       >
         <Form form={form} layout="vertical" onFinish={handleAddService}>
-          <Form.Item name="name" label="Service Name" rules={[{ required: true, message: "Service name is required" }]}>
+          <Form.Item
+            name="name"
+            label="Service Name"
+            rules={[{ required: true, message: "Service name is required" }]}
+          >
             <Input />
           </Form.Item>
         </Form>
@@ -136,7 +160,11 @@ export default function ServiceList() {
         onOk={() => form.submit()}
       >
         <Form form={form} layout="vertical" onFinish={handleUpdate}>
-          <Form.Item name="name" label="Service Name" rules={[{ required: true, message: "Service name is required" }]}>
+          <Form.Item
+            name="name"
+            label="Service Name"
+            rules={[{ required: true, message: "Service name is required" }]}
+          >
             <Input />
           </Form.Item>
         </Form>
