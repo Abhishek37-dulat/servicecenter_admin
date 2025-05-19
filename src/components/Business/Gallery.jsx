@@ -117,6 +117,7 @@ import {
   useUploadBusinessPhotosMutation,
   useDeleteBusinessPhotoMutation,
 } from "../../redux/services/businessApi";
+import { getBackendUrl } from "../../utils/getBackendUrl";
 
 const galleryTypes = [
   "BusinessImage",
@@ -138,21 +139,46 @@ export default function Gallery({ data, businessId }) {
   const [galleries, setGalleries] = useState([]);
   const fileInputRefs = useRef([]);
 
+  // useEffect(() => {
+  //   if (data?.data?.galleries?.length > 0) {
+  //     const loadedGalleries = data.data.galleries.reduce((acc, img) => {
+  //       const existing = acc.find((g) => g.type === img.type);
+  //       if (existing) {
+  //         existing.existingImages.push({ id: img.id, url: img.photoUrl });
+  //       } else {
+  //         acc.push({
+  //           type: img.type,
+  //           images: [],
+  //           existingImages: [{ id: img.id, url: img.photoUrl }],
+  //         });
+  //       }
+  //       return acc;
+  //     }, []);
+  //     console.log(loadedGalleries);
+  //     setGalleries(loadedGalleries);
+  //   }
+  // }, [data]);
   useEffect(() => {
     if (data?.data?.galleries?.length > 0) {
+      const backendUrl = getBackendUrl(); // get the base URL once
+
       const loadedGalleries = data.data.galleries.reduce((acc, img) => {
+        const fullImageUrl = `${backendUrl}${img.photoUrl.replace("/api", "")}`; // full URL
+
         const existing = acc.find((g) => g.type === img.type);
         if (existing) {
-          existing.existingImages.push({ id: img.id, url: img.photoUrl });
+          existing.existingImages.push({ id: img.id, url: fullImageUrl });
         } else {
           acc.push({
             type: img.type,
             images: [],
-            existingImages: [{ id: img.id, url: img.photoUrl }],
+            existingImages: [{ id: img.id, url: fullImageUrl }],
           });
         }
         return acc;
       }, []);
+
+      console.log(loadedGalleries);
       setGalleries(loadedGalleries);
     }
   }, [data]);
@@ -293,7 +319,13 @@ export default function Gallery({ data, businessId }) {
               {/* Show existing images */}
               {gallery.existingImages.map((img, i) => (
                 <div key={i} className="image-item">
-                  <img src={img.url} alt="gallery" width={100} height={100} />
+                  <img
+                    crossOrigin="anonymous"
+                    src={img.url}
+                    alt="gallery"
+                    width={100}
+                    height={100}
+                  />
                   <Button
                     size="small"
                     danger
